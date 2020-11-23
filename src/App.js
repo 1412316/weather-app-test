@@ -2,9 +2,12 @@ import {useState} from 'react';
 import './App.css';
 
 const api = {
-  key: "55a5f1b2c3265a6241bbc2499252df5c",
-  base: "https://api.openweathermap.org/data/2.5/"
+  key: process.env.REACT_APP_API_KEY,
+  base: process.env.REACT_APP_API_BASE
 }
+
+console.log(typeof(process.env.REACT_APP_API_KEY))
+console.log(typeof(api.key))
 
 function App() {
   const [query, setQuery] = useState("");
