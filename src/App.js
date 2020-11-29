@@ -1,13 +1,9 @@
-import {useState} from 'react';
-import './App.css';
+import { useState } from 'react';
 
 const api = {
   key: process.env.REACT_APP_API_KEY,
   base: process.env.REACT_APP_API_BASE
 }
-
-console.log(typeof(process.env.REACT_APP_API_KEY))
-console.log(typeof(api.key))
 
 function App() {
   const [query, setQuery] = useState("");
@@ -16,29 +12,33 @@ function App() {
   const search = e => {
     if (e.key === "Enter") {
       fetch(`${api.base}weather?q=${query}&units=metric&appid=${api.key}`)
-      .then(res => res.json())
-      .then(result => {
-        setWeather(result);
-        setQuery("");
-        console.log(result);
-      });
+        .then(res => res.json())
+        .then(result => {
+          setWeather(result);
+          setQuery("");
+          console.log(result);
+        });
     }
   }
 
   const dateBuilder = (d) => {
     let months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  
+
     let day = days[d.getDay()];
     let date = d.getDate();
     let month = months[d.getMonth()];
     let year = d.getFullYear();
-  
+
     return `${day} ${date} ${month} ${year}`;
   }
 
   return (
-    <div className="app">
+    <div className={
+      (typeof weather.main != "undefined")
+        ? ((weather.main.temp > 16) ? "app-warm" : "app")
+        : "app"
+    }>
       <main>
         <div className="search__box">
           <input
@@ -47,17 +47,17 @@ function App() {
             placeholder="Search..."
             onChange={e => setQuery(e.target.value)}
             value={query}
-            onKeyPress={search} 
+            onKeyPress={search}
           />
         </div>
-        {(typeof weather.main != "undefined") ? 
-        (
-          <div>
-            <div className="info__box">
-              <div className="info__box-location">
-                {weather.name}, {weather.sys.country}
-              </div>
-              <div className="info__box-date">{dateBuilder(new Date())}</div>
+        {(typeof weather.main != "undefined") ?
+          (
+            <div>
+              <div className="info__box">
+                <div className="info__box-location">
+                  {weather.name}, {weather.sys.country}
+                </div>
+                <div className="info__box-date">{dateBuilder(new Date())}</div>
               </div>
               <div className="weather__box">
                 <div className="weather__box-temp">
@@ -66,10 +66,10 @@ function App() {
                 <div className="weather__box-weather">
                   {weather.weather[0].main}
                 </div>
+              </div>
             </div>
-          </div>
-        ) : ""}
-        
+          ) : ""}
+
       </main>
     </div>
   );
